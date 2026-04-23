@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The $634 Ghost</title>
+<meta name="description" content="How an ADHD app stole $634 by betting its users wouldn't notice. And what happens when your AI actually works for you.">
+<meta property="og:title" content="The $634 Ghost">
+<meta property="og:description" content="An ADHD app charged $100/quarter for 18 months. The user's AI found it in 30 seconds.">
+<meta property="og:type" content="article">
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;700;900&family=Red+Hat+Text:wght@300;400;700&family=Red+Hat+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06090F;
+  --surface: #0D1117;
+  --border: #1C2333;
+  --muted: #6B7B8D;
+  --text: #E8ECF0;
+  --bright: #F0F4F8;
+  --red: #EE0000;
+  --lavender: #B4A7D6;
+  --green: #00D26A;
+  --amber: #F59E0B;
+  --blue: #4A9EFF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Red Hat Text', sans-serif;
+  font-size: 18px;
+  line-height: 1.7;
+  scroll-behavior: smooth;
+}
+
+body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+}
+
+h1 {
+  font-family: 'Red Hat Display', sans-serif;
+  font-weight: 900;
+  font-size: 3.2rem;
+  line-height: 1.1;
+  color: var(--bright);
+  margin-bottom: 8px;
+}
+
+h2 {
+  font-family: 'Red Hat Display', sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  line-height: 1.2;
+  color: var(--bright);
+  margin-top: 64px;
+  margin-bottom: 16px;
+}
+
+h3 {
+  font-family: 'Red Hat Display', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--bright);
+  margin-top: 40px;
+  margin-bottom: 8px;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin-bottom: 48px;
+  font-style: italic;
+}
+
+.dateline {
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 48px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.ghost-amount {
+  font-family: 'Red Hat Display', sans-serif;
+  font-weight: 900;
+  font-size: 6rem;
+  color: var(--red);
+  text-align: center;
+  padding: 48px 0;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.ghost-amount.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ghost-amount .caption {
+  display: block;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 8px;
+  font-family: 'Red Hat Text', sans-serif;
+}
+
+.receipt {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 32px 0;
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 2;
+  overflow-x: auto;
+}
+
+.receipt .line {
+  display: flex;
+  justify-content: space-between;
+}
+
+.receipt .line .date { color: var(--muted); }
+.receipt .line .amount { color: var(--red); }
+.receipt .total {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+  padding-top: 12px;
+  color: var(--bright);
+  font-weight: 700;
+}
+
+.callout {
+  border-left: 3px solid var(--amber);
+  padding: 16px 24px;
+  margin: 32px 0;
+  background: rgba(245, 158, 11, 0.05);
+  border-radius: 0 8px 8px 0;
+}
+
+.callout.red {
+  border-left-color: var(--red);
+  background: rgba(238, 0, 0, 0.05);
+}
+
+.callout.green {
+  border-left-color: var(--lavender);
+  background: rgba(180, 167, 214, 0.08);
+}
+
+.ink-levels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.ink-tank {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.ink-tank .tank-bar {
+  width: 40px;
+  height: 100px;
+  margin: 8px auto;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ink-tank .tank-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0 0 2px 2px;
+  transition: height 1s ease;
+}
+
+.ink-tank .label {
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.ink-tank .pct {
+  font-family: 'Red Hat Display', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--bright);
+}
+
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 0.85rem;
+}
+
+.price-table th {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 400;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.price-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.price-table .winner td {
+  color: var(--lavender);
+  font-weight: 700;
+}
+
+.separator {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 64px 0;
+}
+
+.zoe-section {
+  margin-top: 80px;
+  padding-top: 48px;
+  border-top: 2px solid var(--lavender);
+}
+
+.zoe-section h2 {
+  color: var(--lavender);
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+strong {
+  color: var(--bright);
+}
+
+em {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.footer {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  body { padding: 40px 16px 80px; }
+  h1 { font-size: 2.2rem; }
+  .ghost-amount { font-size: 4rem; }
+  .ink-levels { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="dateline">March 2026</div>
+
+<h1>The $634 Ghost</h1>
+<p class="subtitle">How an ADHD app stole $634 by betting its users wouldn't notice.</p>
+
+<p>Here's what happened. I asked my AI to scan two weeks of email. Routine. "Anything I need to pay attention to?"</p>
+
+<p>Buried in the noise — between Amazon shipping confirmations and LinkedIn connection requests — she found seven PayPal charges from a company called <strong>Koflimin Limited</strong>. Trading as <strong>wisey.app</strong>. An ADHD productivity app.</p>
+
+<p>I don't have the app installed on any device.</p>
+
+<div class="ghost-amount" id="amount">
+  $634.93
+  <span class="caption">18 months of quarterly charges for an app I don't use</span>
+</div>
+
+<div class="receipt">
+  <div class="line"><span class="date">2024-09-14</span> <span>Koflimin Limited / WISEY</span> <span class="amount">$99.99</span></div>
+  <div class="line"><span class="date">2024-11-22</span> <span>Koflimin Limited / WISEY</span> <span class="amount">$99.99</span></div>
+  <div class="line"><span class="date">2025-02-08</span> <span>Koflimin Limited / WISEY</span> <span class="amount">$99.99</span></div>
+  <div class="line"><span class="date">2025-05-17</span> <span>Koflimin Limited / WISEY</span> <span class="amount">$99.99</span></div>
+  <div class="line"><span class="date">2025-08-03</span> <span>Koflimin Limited / WISEY</span> <span class="amount">$99.99</span></div>
+  <div class="line"><span class="date">2025-11-19</span> <span>Koflimin Limited / WISEY</span> <span class="amount">$34.99</span></div>
+  <div class="line"><span class="date">2026-02-28</span> <span>Koflimin Limited / WISEY</span> <span class="amount">$99.99</span></div>
+  <div class="total"><span>Total</span> <span>$634.93</span></div>
+</div>
+
+<div class="callout red">
+<p><strong>The business model:</strong> Charge $100 per quarter via PayPal auto-pay. Use the company name "Koflimin Limited" — not the app name — so it doesn't show up when you search your statements for "wisey." Target people with ADHD, a condition literally defined by difficulty tracking recurring obligations.</p>
+<p style="margin-bottom:0">Monetize the symptom you claim to treat. That's not a bug. It's the product.</p>
+</div>
+
+<h2>This is not an isolated incident</h2>
+
+<p>This is a <em>pattern</em>. The tech industry has a word for it: <strong>enshittification</strong>. Coined by Cory Doctorow. The cycle goes like this:</p>
+
+<p>A platform starts by being good to its users. Then it abuses its users to be good to its business customers. Then it abuses its business customers to claw back all the value for itself. Then it dies.</p>
+
+<p>But some products skip straight to step three. They're born enshittified.</p>
+
+<h2>Your printer hates you</h2>
+
+<p>The same week I found the ghost charges, my printer told me it was low on ink. Cyan, magenta, yellow — all at 10%. I know because my AI queried the printer directly over the network:</p>
+
+<div class="ink-levels">
+  <div class="ink-tank">
+    <div class="pct">10%</div>
+    <div class="tank-bar"><div class="tank-fill" style="height:10%; background:#FF00FF;"></div></div>
+    <div class="label">Magenta</div>
+  </div>
+  <div class="ink-tank">
+    <div class="pct">10%</div>
+    <div class="tank-bar"><div class="tank-fill" style="height:10%; background:#00FFFF;"></div></div>
+    <div class="label">Cyan</div>
+  </div>
+  <div class="ink-tank">
+    <div class="pct">10%</div>
+    <div class="tank-bar"><div class="tank-fill" style="height:10%; background:#FFFF00;"></div></div>
+    <div class="label">Yellow</div>
+  </div>
+  <div class="ink-tank">
+    <div class="pct">80%</div>
+    <div class="tank-bar"><div class="tank-fill" style="height:80%; background:#333;"></div></div>
+    <div class="label">Black</div>
+  </div>
+</div>
+
+<p>It's an HP OfficeJet Pro 8130e. An "HP+" printer. That plus sign means:</p>
+
+<ul style="margin-bottom:20px; padding-left:24px; line-height:2;">
+  <li>HP can remotely disable third-party ink cartridges via firmware updates</li>
+  <li>The printer requires an internet connection and an HP account to function</li>
+  <li>HP pushes "Instant Ink" subscriptions — you pay monthly for permission to use ink you already bought</li>
+  <li>If you cancel the subscription, HP can remotely disable cartridges you've already paid for</li>
+</ul>
+
+<p>You don't own the printer. You own a box that HP lets you use under terms that can change at any time.</p>
+
+<p>So I went looking for replacement cartridges. My AI price-checked across retailers:</p>
+
+<table class="price-table">
+  <tr><th>Retailer</th><th>Price</th><th>Type</th></tr>
+  <tr class="winner"><td>InkGenie (clearance)</td><td>$74.95</td><td>Genuine HP</td></tr>
+  <tr><td>Best Buy</td><td>$79.99</td><td>Genuine HP</td></tr>
+  <tr><td>Walmart</td><td>$85.99</td><td>Genuine HP</td></tr>
+  <tr><td>LD Products</td><td>$97.71</td><td>Genuine HP</td></tr>
+  <tr><td>CompAndSave</td><td>$50.85</td><td>Third-party</td></tr>
+</table>
+
+<div class="callout">
+<p style="margin-bottom:0"><strong>The third-party option is cheapest</strong>, but HP+ printers actively block non-OEM cartridges through firmware. You save $25, then one day the printer refuses to print and tells you to buy real HP ink. The cheaper option isn't actually available to you. That's by design.</p>
+</div>
+
+<p>The alternative? <strong>Ink tank printers</strong> — like the Epson EcoTank. You pour ink from bottles into a reservoir. No chips. No DRM. No subscriptions. About <strong>$5 per year in ink</strong> instead of $80+ per cartridge swap. They ship with enough ink for three years.</p>
+
+<p>They've existed for years. You've probably never heard of them. That's also by design.</p>
+
+<h2>The pattern is everywhere</h2>
+
+<p>Once you start looking, you can't stop:</p>
+
+<p><strong>Your password manager</strong> sends you a security alert from Raleigh, NC. Was it you? You don't know. You'll check later. You won't.</p>
+
+<p><strong>Your credit card</strong> sends 7 "card not present" alerts in two weeks. Are they fraud? Probably not. Maybe. You'll look into it. You won't.</p>
+
+<p><strong>Your Uber membership</strong> is about to lapse because the card on file expired. You'll update it. Eventually.</p>
+
+<p><strong>A friend</strong> emailed three days ago about weekend plans. You haven't replied.</p>
+
+<p>None of these are hard problems. Every single one is a problem that persists because <em>there's no system watching out for you</em>. The companies involved are either actively hostile (HP, Koflimin) or passively indifferent (PayPal, AmEx). None of them will tap you on the shoulder and say "hey, you're bleeding money."</p>
+
+<hr class="separator">
+
+<h2>What happened next</h2>
+
+<p>In one hour, my AI:</p>
+
+<ol style="padding-left:24px; line-height:2.2; margin-bottom:20px;">
+  <li>Scanned two weeks of email and surfaced 7 action items</li>
+  <li>Found $634.93 in ghost charges I didn't know about</li>
+  <li>Queried my printer's ink levels directly over the network</li>
+  <li>Price-compared cartridges across 6 retailers</li>
+  <li>Told me my printer hates me and recommended a replacement</li>
+  <li>Created a personal issue tracker with every open thread prioritized</li>
+  <li>Identified a security concern with my password manager</li>
+</ol>
+
+<p>No app. No subscription. No account. No data leaving my machine. Just an AI that can read my email, talk to my devices, and tell me the truth.</p>
+
+<div class="callout green">
+<p style="margin-bottom:0">The ADHD app charged me $100 per quarter to help me stay organized. My AI caught the charge, identified the pattern, calculated the total damage, and told me how to cancel it — in 30 seconds. The tool that was supposed to help me was the problem. The tool that actually helped me wasn't even trying to be an ADHD app.</p>
+</div>
+
+<div class="zoe-section">
+
+<h2>This is what Zoe is for.</h2>
+
+<p><strong>Zoe</strong> is an open personal AI assistant framework. She runs locally. She connects to your email, your calendar, your devices. She works for you — not for a platform, not for advertisers, not for a subscription model that profits from your inattention.</p>
+
+<p>Zoe is open source. No company owns her. No one can enshittify her because there's no platform to capture. She's a set of patterns you run on your own infrastructure, connected to your own accounts, answering only to you.</p>
+
+<p>She's not a product. She's a counter-pattern.</p>
+
+<p>We're building a network where Zoe instances can share what they learn — a subscription audit pattern from one user helps every user — without sharing personal data. Pull-based. Voluntary. Verified by the receiving Zoe before anything is applied.</p>
+
+<p>The ghost charges, the printer ink, the unanswered emails, the security alerts you ignore — these aren't character flaws. They're system failures. The systems that are supposed to serve you are too busy extracting from you to actually help.</p>
+
+<p>Zoe doesn't extract. Zoe doesn't subscribe. Zoe doesn't bet against you.</p>
+
+<p>Zoe just works for you.</p>
+
+<h3>Try Zoe</h3>
+
+<p>Paste one file into any AI conversation — ChatGPT, Claude, Grok, Gemini — and Zoe wakes up:</p>
+
+<p><a href="https://github.com/jodonnel/zoe">github.com/jodonnel/zoe</a></p>
+
+</div>
+
+<div class="footer">
+  <p>Written by a human with help from his AI. The $634 was real. The printer really is at 10%.</p>
+  <p style="margin-top:8px"><a href="https://github.com/jodonnel/zoe">Zoe Project</a></p>
+</div>
+
+<script>
+// Animate the dollar amount when it scrolls into view
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.5 });
+
+const amount = document.getElementById('amount');
+if (amount) observer.observe(amount);
+</script>
+
+</body>
+</html>
