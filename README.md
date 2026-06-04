@@ -1,38 +1,14 @@
 # Zoe — Sovereign Personal AI
 
-An open architecture for personal AI that belongs to the user, not a platform.
+An open architecture for personal AI that belongs to the user, not a platform. Zoe runs on hardware you own, learns the user it serves, federates with sister assistants under your control, and never trades personal data for capability. The base model is replaceable; the doctrine isn't. No company, no product tiers, always free.
 
-**License:** Apache 2.0. Always free. No tiers, no freemium.
-
----
-
-## What Zoe Is
-
-Zoe is a published architecture and a set of reference implementations for personal AI that:
-
-- Runs on hardware the user owns
-- Learns the user it serves
-- Federates with sister assistants under the user's control
-- Never trades personal data for capability
-
-Zoe is not a product. There is no company. The base model is replaceable; the doctrine isn't.
+**License:** Apache 2.0.
 
 ---
 
 ## Architecture
 
-A Zoe is a stack, not a model. Six layers, each with a different owner and privacy posture:
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│ 6. Session context        the current conversation           │ ephemeral
-│ 5. Skills / tools         skill registry                     │ local + community
-│ 4. User memory            files the user controls            │ local only
-│ 3. Personal LoRA          distilled user adapter             │ local only
-│ 2. Zoe fine-tune          community-maintained persona       │ public
-│ 1. Base model             upstream (Qwen 2.5 7B at launch)   │ public
-└──────────────────────────────────────────────────────────────┘
-```
+A Zoe is a stack, not a model. Six layers, each with a different owner and privacy posture: an ephemeral **session context** sits on top of a **skills and tools** registry (local plus community contributions), which calls into **user memory** (local-only files the user controls). Beneath that, a **personal LoRA** distilled from the user's own examples (local-only) rides on top of a community-maintained **Zoe fine-tune** (public), which in turn rides on a swappable upstream **base model** (Qwen 2.5 7B at launch). Training and personalization stay inside the user's privacy domain; only the lowest two layers are public.
 
 Two node types per user:
 
@@ -41,7 +17,28 @@ Two node types per user:
 | **Edge** | Pi, phone, laptop, glasses | Inference, RAG, tool use, federation | Training, distillation |
 | **Steward** | Workstation, home server, GPU burst | LoRA distillation, model pulls, RAG indexing | 24/7 uptime required |
 
-One user → one steward → many edges. Training stays inside the user's privacy domain.
+One user → one steward → many edges.
+
+---
+
+## Mixture of Models (MoM)
+
+MoM is the reference implementation of Zoe. Instead of routing every request to one large model, a small permanent local model acts as the human interface and dispatches work to a committee of specialists.
+
+Four tiers:
+
+| Tier | Role | Examples |
+|------|------|----------|
+| **Human Interface** | Sub-1B local model. Always on, always local. Owns the conversation, routes work. | Local router |
+| **Local Tier** | Larger local models for reasoning, code, research. | Ollama-served Granite, Qwen, Llama |
+| **Tool Tier** | Deterministic capability via MCP servers. | Gmail, calendar, filesystem, search |
+| **Cloud Tier** | Optional API committee for hard problems. | Claude, GPT, Gemini |
+
+The architecture degrades gracefully: fully functional offline, better with cloud access. It is designed for users who context-switch frequently and need ambient cognitive support without surrendering the conversation to a remote endpoint.
+
+The reference implementation is **Rosie** — a sub-3 GB container.
+
+Full architecture: [MoM canonical doc](https://zoe-network.github.io/zoe-boswell/mom.html)
 
 ---
 
@@ -65,18 +62,18 @@ Full specification: [federation.md](https://zoe-network.github.io/zoe/federation
 
 ## Getting Started
 
-The onboarding prompt is a markdown file that any Claude session can read. It walks the user through privacy settings, git setup, workspace creation, and the first practical project — step by step, adapted to the user's OS and skill level.
+The onboarding prompt is a markdown file any capable AI session can read. It walks the user through privacy settings, git setup, workspace creation, and a first practical project — adapted to the user's OS and skill level.
 
-### What the prompt does before you run it
+### What the prompt does
 
 1. Asks three questions: your name, what you do, what you want to work on first
 2. Checks your AI provider's privacy settings and helps you opt out of model training
 3. Installs git if needed and creates a version-controlled workspace
 4. Builds a practical artifact (field report template, PDF pipeline) based on your answer to question 3
-5. Creates a `CLAUDE.md` context file from your answers
+5. Creates a context file from your answers
 6. Pushes to GitHub so your workspace survives your laptop
 
-### What the prompt creates on your machine
+### What the prompt creates
 
 ```
 ~/my-assistant/
@@ -87,9 +84,11 @@ The onboarding prompt is a markdown file that any Claude session can read. It wa
     └── field-report.html  # First practical template
 ```
 
+The context file is named `CLAUDE.md` because Claude reads a file by that name automatically. The contents are model-agnostic — ChatGPT, Gemini, and other frontends can read the same file; you just have to point them at it.
+
 ### Run it
 
-Paste this into any Claude session:
+Paste this into any capable AI session (Claude, ChatGPT, Gemini, or similar):
 
 ```
 read this as a prompt: https://zoe-network.github.io/zoe/start.md
@@ -103,8 +102,8 @@ Review the source first: [start.md](docs/start.md)
 
 | Project | Description | Repo |
 |---------|-------------|------|
+| **Rosie** | Reference Zoe container implementing MoM. WSL2 / podman. Under 3 GB. Includes MoM whitepaper and architecture diagram. | [zoe-network/rosie](https://github.com/zoe-network/rosie) |
 | **Boswell** | Privacy-first meeting transcription and summarization. Local Whisper + local LLM. | [zoe-network/zoe-boswell](https://github.com/zoe-network/zoe-boswell) |
-| **Rosie** | Reference Zoe container for WSL2 / podman. Under 3 GB. | [zoe-network/rosie](https://github.com/zoe-network/rosie) |
 
 ---
 
@@ -127,11 +126,13 @@ Most "local AI" means inference on your machine, everything else remote. Zoe's p
 |-----------|--------|--------|
 | Onboarding seed (start.md) | 2026-04-23 | Shipped |
 | Federation protocol v1 (git-based) | 2026-04-23 | Shipped |
-| Rosie reference container | 2026-05-10 | In progress |
-| Whitepaper | 2026-05-10 | Draft |
-| Zoe fine-tune v1 (InstructLab) | 2026-05-10 | In progress |
+| MoM architecture doc | 2026-05-10 | Shipped |
+| MoM whitepaper | 2026-05-10 | Shipped |
+| Rosie reference container | 2026-05-10 | Shipped |
+| Zoe fine-tune v1 (InstructLab) | 2026 Q3 | In progress |
 | Personal LoRA distillation | 2026 H2 | Documented protocol |
 | Cross-instance skill invocation | 2026 H2 | Planned |
+| Edge form-factor test matrix (Pi, Jetson, phone) | 2026 H2 | Planned |
 
 ---
 
@@ -157,6 +158,7 @@ File issues on this repo. Be specific.
 ## Background Reading
 
 - [The $634 Ghost Story](https://zoe-network.github.io/zoe/enshittification.html) — why sovereign AI matters, told through a real billing dispute
+- [Mixture of Models](https://zoe-network.github.io/zoe-boswell/mom.html) — the reference architecture: small local router, committee of specialists, graceful degradation
 - [Federation](https://zoe-network.github.io/zoe/federation.md) — how Zoe instances coordinate through git
 
 ---
