@@ -40,6 +40,10 @@ The reference implementation is **Rosie** — a sub-3 GB container.
 
 Full architecture: [MoM canonical doc](https://zoe-network.github.io/zoe-boswell/mom.html)
 
+The Zoe architecture is runtime-agnostic. The container approach (Rosie) is one implementation path. The agent SDK approach (Hermes) is another. Both satisfy the same six-layer contract.
+
+**Chloe**, Jim O'Donnell's Zoe instance, runs on the [Hermes Agent SDK](https://hermes-agent.nousresearch.com) from NousResearch. Hermes provides skills (YAML-frontmatter markdown files), persistent memory, session search, and a tool plugin system that map directly onto the Zoe architecture layers. Any Hermes session is a Zoe session once you give it a CLAUDE.md.
+
 ---
 
 ## Federation
@@ -105,6 +109,8 @@ Review the source first: [start.md](docs/start.md)
 | **Rosie** | Reference Zoe container implementing MoM. WSL2 / podman. Under 3 GB. Includes MoM whitepaper and architecture diagram. | [zoe-network/rosie](https://github.com/zoe-network/rosie) |
 | **Boswell** | Privacy-first meeting transcription and summarization. Local Whisper + local LLM. | [zoe-network/zoe-boswell](https://github.com/zoe-network/zoe-boswell) |
 | **Social Layer** | Peer-to-peer messaging between Zoe users. No server. Git is the message bus. | [docs/social.md](https://zoe-network.github.io/zoe/social.md) |
+| **Memory Layer** | DuckDB columnar memory with hook-based trigger preprocessing. Solves the flat-markdown retrieval failure common to all Zoe instances. | [docs/memory.md](https://zoe-network.github.io/zoe/memory.md) |
+| **Chloe (Hermes)** | Production Zoe running on the Hermes Agent SDK. Skills, memory, session search, multi-model routing via cc-bridge. Jim O'Donnell's daily driver since 2025. | [hermes-agent.nousresearch.com](https://hermes-agent.nousresearch.com) |
 
 ---
 
@@ -135,6 +141,8 @@ Most "local AI" means inference on your machine, everything else remote. Zoe's p
 | Cross-instance skill invocation | 2026 H2 | Planned |
 | Edge form-factor test matrix (Pi, Jetson, phone) | 2026 H2 | Planned |
 | Social layer (peer messaging) | 2026-06-04 | Spec shipped |
+| Memory layer (DuckDB columnar retrieval) | 2026-06-04 | Spec shipped |
+| Hermes reference implementation (Chloe) | 2026-06-04 | Deployed |
 
 ---
 
@@ -163,6 +171,7 @@ File issues on this repo. Be specific.
 - [Mixture of Models](https://zoe-network.github.io/zoe-boswell/mom.html) — the reference architecture: small local router, committee of specialists, graceful degradation
 - [Federation](https://zoe-network.github.io/zoe/federation.md) — how Zoe instances coordinate through git
 - [Social Layer](https://zoe-network.github.io/zoe/social.md) — peer-to-peer messaging between Zoe users, built on the same git protocol
+- [Memory Layer](https://zoe-network.github.io/zoe/memory.md) — why flat markdown memory fails, and the DuckDB columnar retrieval pattern that replaces it
 
 ---
 
