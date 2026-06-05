@@ -104,6 +104,7 @@ Review the source first: [start.md](docs/start.md)
 |---------|-------------|------|
 | **Rosie** | Reference Zoe container implementing MoM. WSL2 / podman. Under 3 GB. Includes MoM whitepaper and architecture diagram. | [zoe-network/rosie](https://github.com/zoe-network/rosie) |
 | **Boswell** | Privacy-first meeting transcription and summarization. Local Whisper + local LLM. | [zoe-network/zoe-boswell](https://github.com/zoe-network/zoe-boswell) |
+| **Social Layer** | Peer-to-peer messaging between Zoe users. No server. Git is the message bus. | [docs/social.md](https://zoe-network.github.io/zoe/social.md) |
 
 ---
 
@@ -133,6 +134,7 @@ Most "local AI" means inference on your machine, everything else remote. Zoe's p
 | Personal LoRA distillation | 2026 H2 | Documented protocol |
 | Cross-instance skill invocation | 2026 H2 | Planned |
 | Edge form-factor test matrix (Pi, Jetson, phone) | 2026 H2 | Planned |
+| Social layer (peer messaging) | 2026-06-04 | Spec shipped |
 
 ---
 
@@ -160,6 +162,7 @@ File issues on this repo. Be specific.
 - [The $634 Ghost Story](https://zoe-network.github.io/zoe/enshittification.html) — why sovereign AI matters, told through a real billing dispute
 - [Mixture of Models](https://zoe-network.github.io/zoe-boswell/mom.html) — the reference architecture: small local router, committee of specialists, graceful degradation
 - [Federation](https://zoe-network.github.io/zoe/federation.md) — how Zoe instances coordinate through git
+- [Social Layer](https://zoe-network.github.io/zoe/social.md) — peer-to-peer messaging between Zoe users, built on the same git protocol
 
 ---
 

@@ -52,6 +52,20 @@ When you finish an onboarding session, create MAILBOX.md and write the first ent
 
 ---
 
+
+---
+
+## Social Layer: Messaging Between Users
+
+The same git-based pattern that lets your Zoe sessions talk to each other also lets your Zoe talk to someone else's.
+
+Each user's repo gets a `SOCIAL/OUTBOX.md` — an append-only log of messages addressed to named contacts. Your Zoe polls your contacts' repos, finds messages addressed to you, and delivers them.
+
+No server. No accounts beyond GitHub repos. The protocol is a 50-line Python poller and a markdown file.
+
+Full specification: [social.md](social.md)
+
+
 **Zoe is always free. Zoe is code, not a product. Apache 2.0.**
 
 Start here: https://zoe-network.github.io/zoe-boswell/start.md
