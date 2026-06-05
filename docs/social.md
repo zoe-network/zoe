@@ -158,7 +158,7 @@ The hard part isn't the protocol — it's delivery latency. Git polling is not p
 - Protocol spec: this document
 - Reference poller: `tools/zoe-social-check.py`
 - Bootstrap exchange: out-of-band by design
-- Telegram integration: see Boswell / Chloe proactive notification pattern
+- Telegram integration: see Boswell proactive notification pattern
 
 ---
 

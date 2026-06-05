@@ -129,7 +129,7 @@ CREATE TABLE triggers (
 
 ## Reference Implementation
 
-Chloe (Jim O'Donnell's Zoe instance, running on the Hermes Agent SDK) ships a working implementation:
+The reference implementation (running on the Hermes Agent SDK) ships a working version:
 
 - **Database:** `~/chloe/STATE/chloe-memory.duckdb`
 - **Migration:** `~/chloe/tools/memory/migrate.py` — ingests flat markdown memory files into the DB
